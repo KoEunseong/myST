@@ -10,5 +10,5 @@ st.graphviz_chart('''
   digraph {
     Big_shark -> Tuna
     Tuna -> dong-won
-  }
+    }
 ''')
