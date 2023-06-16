@@ -1,4 +1,2 @@
-graphviz
 matplotlib
-numpy
 osmnx
