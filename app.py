@@ -1,31 +1,25 @@
 import streamlit as st
 import osmnx as ox
+import networkx as nx
 import matplotlib.pyplot as plt
 
-# 대한민국 지도를 가져옵니다.
-place_name = "대한민국"
-graph = ox.graph_from_place(place_name, network_type="all")
-area = ox.geocode_to_gdf(place_name)
-fig, ax = ox.plot_graph(ox.project_graph(graph), show=False, close=False, figsize=(10, 8), edge_color='black')
+# 페이지 제목 설정
+st.title("OSMnx 도로 네트워크 시각화")
 
-def show_properties(district):
-    # 선택한 구(district)의 속성 정보를 가져옵니다.
-    properties = area[area['구(district)'] == district]
-    
-    # 속성 정보를 출력합니다.
-    st.write(f"**{district}**의 속성 정보:")
-    st.write(properties)
+# 사용자로부터 도시 이름 입력 받기
+city_name = st.text_input("도시 이름을 입력하세요", "New York, USA")
 
-def main():
-    # 사이드바를 만듭니다.
-    st.sidebar.title("지역 선택")
-    selected_district = st.sidebar.selectbox("구(district)를 선택하세요.", area['구(district)'])
-    
-    # 선택한 구(district)의 속성 정보를 보여줍니다.
-    show_properties(selected_district)
-    
-    # 대한민국 지도를 출력합니다.
+# OSMnx를 사용하여 도로 네트워크 가져오기
+try:
+    graph = ox.graph_from_place(city_name, network_type="all")
+    st.success("도로 네트워크 데이터 로드 완료!")
+except:
+    st.error("도로 네트워크 데이터를 로드하는 중 오류가 발생했습니다.")
+
+# 도로 네트워크 시각화
+if graph is not None:
+    # 도로 네트워크 그래프를 Matplotlib Figure로 변환
+    fig, ax = ox.plot_graph(graph, show=False, close=False)
+
+    # Matplotlib Figure를 Streamlit에 표시
     st.pyplot(fig)
-
-if __name__ == '__main__':
-    main()
